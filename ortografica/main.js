@@ -1,47 +1,37 @@
-// Crear una escena
-const scene = new THREE.Scene();
+var width = window.innerWidth;
+var height = window.innerHeight;
 
-// Crear una cámara ortográfica
-const camera = new THREE.OrthographicCamera(
-  window.innerWidth / -2, // left
-  window.innerWidth / 2, // right
-  window.innerHeight / 2, // top
-  window.innerHeight / -2, // bottom
-  1, // near
-  1000 // far
-);
+// Crear una cámara ortográfica en lugar de una cámara de perspectiva
+var camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, -1000, 1000);
 
-// Crear un renderizador
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+// Configurar la posición y la dirección de la cámara
+camera.position.set(0, 0, 5);
+camera.lookAt(0, 0, 0);
+
+// Crear la escena, el renderizador y agregar la cámara
+var scene = new THREE.Scene();
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
+scene.add(camera);
 
-// Puntos vértices del cilindro
-const puntos = [
-  new THREE.Vector3(0, 0, 0),
-  new THREE.Vector3(1, 0, 0),
-  new THREE.Vector3(1, 1, 0),
-  new THREE.Vector3(0, 1, 0),
-  new THREE.Vector3(0, 0, 1),
-  new THREE.Vector3(1, 0, 1),
-  new THREE.Vector3(1, 1, 1),
-  new THREE.Vector3(0, 1, 1),
-];
+// Crear la geometría y el material del cilindro
+var geometry = new THREE.CylinderGeometry(100, 100, 200, 32, 1, false);
+var material = new THREE.MeshBasicMaterial({color: 0xff0000});
 
-// Creación de la geometría y material del cilindro
-const geometry = new THREE.LatheBufferGeometry(puntos, 12);
-const material = new THREE.MeshBasicMaterial({ color: 0xf00f0f });
-const cilindro = new THREE.Mesh(geometry, material);
+// Crear el objeto visual del cilindro
+var cylinder = new THREE.Mesh(geometry, material);
 
 // Agregar el cilindro a la escena
-scene.add(cilindro);
+scene.add(cylinder);
 
-// Agregar controles de órbita a la cámara
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-// Renderizar la escena
+// Animar el cilindro
 function animate() {
   requestAnimationFrame(animate);
+  cylinder.rotation.x += 0.01;
+  cylinder.rotation.y += 0.01;
   renderer.render(scene, camera);
 }
 animate();
+
+
